@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class VideoPlayerPipViewModel : ViewModel() {
+
     private val _player = MutableStateFlow<ExoPlayer?>(null)
     val player: StateFlow<ExoPlayer?> = _player
 
@@ -33,14 +34,16 @@ class VideoPlayerPipViewModel : ViewModel() {
     private val _isPlaying = MutableStateFlow(true)
     val isPlaying: StateFlow<Boolean> = _isPlaying
 
-    private var progressJob: Job? = null
+    private val _videoUrl = MutableStateFlow("https://bestvpn.org/html5demos/assets/dizzy.mp4")
+    val videoUrl: StateFlow<String> = _videoUrl
 
+    private var progressJob: Job? = null
     private var isInitialized = false
 
-    val videoUrl = "https://bestvpn.org/html5demos/assets/dizzy.mp4"
-
     fun playNewVideo(context: Context, videoUri: Uri) {
-        if (isInitialized) return // already initialized — don't re-init again
+        releasePlayer()
+
+        _videoUrl.value = videoUri.toString()
 
         val exoPlayer = setUpExoPlayer(context, videoUri)
         _player.value = exoPlayer
@@ -64,10 +67,8 @@ class VideoPlayerPipViewModel : ViewModel() {
     @OptIn(UnstableApi::class)
     private fun setUpExoPlayer(context: Context, videoUri: Uri): ExoPlayer {
         val mediaItem = MediaItem.fromUri(videoUri)
-
         val dataSourceFactory = DefaultDataSource.Factory(context)
-        val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
-            .createMediaSource(mediaItem)
+        val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
 
         return ExoPlayer.Builder(context).build().apply {
             setMediaSource(mediaSource)
@@ -77,7 +78,6 @@ class VideoPlayerPipViewModel : ViewModel() {
         }
     }
 
-
     private fun releasePlayer() {
         progressJob?.cancel()
         progressJob = null
@@ -85,8 +85,8 @@ class VideoPlayerPipViewModel : ViewModel() {
         _player.value = null
         _currentPosition.value = 0L
         _duration.value = 1L
+        isInitialized = false
     }
-
 
     fun toggleMute() {
         _isMuted.value = !_isMuted.value
@@ -104,7 +104,6 @@ class VideoPlayerPipViewModel : ViewModel() {
         _isPlaying.value = true
     }
 
-
     override fun onCleared() {
         super.onCleared()
         releasePlayer()
@@ -113,6 +112,4 @@ class VideoPlayerPipViewModel : ViewModel() {
     fun release() {
         releasePlayer()
     }
-
-
 }
