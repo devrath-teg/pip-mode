@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -40,6 +41,7 @@ fun PipVideoPlayer(
     val isPlaying by viewModel.isPlaying.collectAsState()
     val currentPosition by viewModel.currentPosition.collectAsState()
     val duration by viewModel.duration.collectAsState()
+    val isBuffering by viewModel.isBuffering.collectAsState()
 
     LaunchedEffect(videoUri) {
         viewModel.playNewVideo(context, videoUri)
@@ -57,6 +59,17 @@ fun PipVideoPlayer(
                 update = { it.setPlayer(exoPlayer) },
                 modifier = Modifier.fillMaxSize()
             )
+
+            if (isBuffering) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.3f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = Color.White)
+                }
+            }
 
             val progress = if (duration > 0) currentPosition.toFloat() / duration else 0f
 
@@ -127,13 +140,13 @@ fun PipVideoPlayer(
     }
 }
 
-
 fun formatDuration(ms: Long): String {
     val totalSeconds = ms / 1000
     val minutes = totalSeconds / 60
     val seconds = totalSeconds % 60
     return "%02d:%02d".format(minutes, seconds)
 }
+
 
 
 

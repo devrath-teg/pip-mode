@@ -6,6 +6,7 @@ import androidx.annotation.OptIn
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.exoplayer.ExoPlayer
@@ -36,6 +37,9 @@ class VideoPlayerPipViewModel : ViewModel() {
 
     private val _videoUrl = MutableStateFlow("https://bestvpn.org/html5demos/assets/dizzy.mp4")
     val videoUrl: StateFlow<String> = _videoUrl
+
+    private val _isBuffering = MutableStateFlow(true)
+    val isBuffering: StateFlow<Boolean> = _isBuffering
 
     private var progressJob: Job? = null
     private var isInitialized = false
@@ -75,6 +79,20 @@ class VideoPlayerPipViewModel : ViewModel() {
             prepare()
             seekTo(0)
             playWhenReady = true
+
+            addListener(object : Player.Listener {
+                override fun onPlaybackStateChanged(state: Int) {
+                    _isBuffering.value = when (state) {
+                        Player.STATE_BUFFERING -> true
+                        Player.STATE_READY, Player.STATE_ENDED -> false
+                        else -> _isBuffering.value
+                    }
+                }
+
+                override fun onIsLoadingChanged(isLoading: Boolean) {
+                    _isBuffering.value = isLoading
+                }
+            })
         }
     }
 
@@ -85,6 +103,7 @@ class VideoPlayerPipViewModel : ViewModel() {
         _player.value = null
         _currentPosition.value = 0L
         _duration.value = 1L
+        _isBuffering.value = true
         isInitialized = false
     }
 
@@ -113,3 +132,4 @@ class VideoPlayerPipViewModel : ViewModel() {
         releasePlayer()
     }
 }
+
