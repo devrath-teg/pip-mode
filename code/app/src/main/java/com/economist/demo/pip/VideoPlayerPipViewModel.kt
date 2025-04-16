@@ -42,9 +42,13 @@ class VideoPlayerPipViewModel : ViewModel() {
     val isBuffering: StateFlow<Boolean> = _isBuffering
 
     private var progressJob: Job? = null
-    private var isInitialized = false
+    private var isInitializedInternal = false
+    val isInitialized: Boolean
+        get() = isInitializedInternal
 
     fun playNewVideo(context: Context, videoUri: Uri) {
+        if (isInitialized && _videoUrl.value == videoUri.toString()) return
+
         releasePlayer()
 
         _videoUrl.value = videoUri.toString()
@@ -65,7 +69,7 @@ class VideoPlayerPipViewModel : ViewModel() {
             }
         }
 
-        isInitialized = true
+        isInitializedInternal = true
     }
 
     @OptIn(UnstableApi::class)
@@ -77,16 +81,12 @@ class VideoPlayerPipViewModel : ViewModel() {
         return ExoPlayer.Builder(context).build().apply {
             setMediaSource(mediaSource)
             prepare()
-            seekTo(0)
+            seekTo(_currentPosition.value)
             playWhenReady = true
 
             addListener(object : Player.Listener {
                 override fun onPlaybackStateChanged(state: Int) {
-                    _isBuffering.value = when (state) {
-                        Player.STATE_BUFFERING -> true
-                        Player.STATE_READY, Player.STATE_ENDED -> false
-                        else -> _isBuffering.value
-                    }
+                    _isBuffering.value = state == Player.STATE_BUFFERING
                 }
 
                 override fun onIsLoadingChanged(isLoading: Boolean) {
@@ -104,7 +104,7 @@ class VideoPlayerPipViewModel : ViewModel() {
         _currentPosition.value = 0L
         _duration.value = 1L
         _isBuffering.value = true
-        isInitialized = false
+        isInitializedInternal = false
     }
 
     fun toggleMute() {
@@ -123,12 +123,12 @@ class VideoPlayerPipViewModel : ViewModel() {
         _isPlaying.value = true
     }
 
-    override fun onCleared() {
-        super.onCleared()
+    fun release() {
         releasePlayer()
     }
 
-    fun release() {
+    override fun onCleared() {
+        super.onCleared()
         releasePlayer()
     }
 }

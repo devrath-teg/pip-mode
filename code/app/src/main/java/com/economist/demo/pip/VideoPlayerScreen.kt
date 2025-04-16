@@ -78,6 +78,12 @@ fun VideoPlayerScreen(
         }
     }
 
+    LaunchedEffect(Unit) {
+        if (!viewModel.isInitialized) {
+            viewModel.playNewVideo(context, uri)
+        }
+    }
+
     val videoList = listOf(
         "https://bestvpn.org/html5demos/assets/dizzy.mp4",
         "https://files.testfile.org/Video%20MP4%2FRoad%20-%20testfile.org.mp4",
