@@ -1,4 +1,4 @@
-package com.economist.demo.pip
+package com.economist.demo.pip.screens.fragments
 
 import android.content.pm.ActivityInfo
 import android.os.Build
@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import com.economist.demo.pip.screens.activities.VideoPlayerFullScreenActivity
+import com.economist.demo.pip.screens.composables.VideoPlayerScreen
 
 class VideoPlayerFragment : Fragment() {
 
@@ -19,11 +21,9 @@ class VideoPlayerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View = ComposeView(requireContext()).apply {
         setContent {
-
-            // Cast the hosting activity to your specific activity class
             val activity = requireActivity() as VideoPlayerFullScreenActivity
 
-            VideoPlayerNavHost(
+            VideoPlayerScreen(
                 onEnterPip = {
                     activity.enterPipMode()
                 },

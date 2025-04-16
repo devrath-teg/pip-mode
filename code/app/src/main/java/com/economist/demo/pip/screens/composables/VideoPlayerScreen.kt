@@ -1,12 +1,9 @@
-package com.economist.demo.pip
+package com.economist.demo.pip.screens.composables
 
 import android.app.Activity
-import android.app.PictureInPictureParams
-import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
-import android.util.Rational
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,9 +21,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,6 +41,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.economist.demo.R
+import com.economist.demo.pip.VideoPlayerPipViewModel
+import com.economist.demo.pip.screens.composables.player.PipVideoPlayer
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

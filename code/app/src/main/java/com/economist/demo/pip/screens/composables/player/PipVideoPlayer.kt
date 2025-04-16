@@ -1,4 +1,4 @@
-package com.economist.demo.pip
+package com.economist.demo.pip.screens.composables.player
 
 import android.net.Uri
 import androidx.compose.foundation.background
@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
 import com.economist.demo.R
+import com.economist.demo.pip.VideoPlayerPipViewModel
 
 @Composable
 fun PipVideoPlayer(
