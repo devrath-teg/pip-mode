@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
+import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -51,12 +52,15 @@ fun VideoPlayerScreen(
     onEnterFullscreen: () -> Unit,
     onExitFullscreen: () -> Unit
 ) {
-    val viewModel: VideoPlayerPipViewModel = viewModel()
+   /* val viewModel: VideoPlayerPipViewModel = viewModel()
     val videoUrl by viewModel.videoUrl.collectAsState()
-    val uri = remember(videoUrl) { videoUrl.toUri() }
-
+    val uri = remember(videoUrl) { videoUrl.toUri() }*/
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
+    val activity = context as ComponentActivity
+    val viewModel: VideoPlayerPipViewModel = viewModel(activity)
+    val videoUrl by viewModel.videoUrl.collectAsState()
+    val uri = remember(videoUrl) { videoUrl.toUri() }
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val screenHeight = configuration.screenHeightDp.dp
 

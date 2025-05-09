@@ -131,5 +131,13 @@ class VideoPlayerPipViewModel : ViewModel() {
         super.onCleared()
         releasePlayer()
     }
+
+    fun hideActions() {
+        println("Dev")
+    }
+
+    fun showActions() {
+        println("Devrath")
+    }
 }
 
