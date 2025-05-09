@@ -19,6 +19,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -52,7 +53,12 @@ class VideoPlayerFullScreenActivity : AppCompatActivity() {
             addAction(ACTION_PLAY)
             addAction(ACTION_PAUSE)
         }
-        registerReceiver(pipReceiver, filter)
+        ContextCompat.registerReceiver(
+            this,
+            pipReceiver,
+            filter,
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
     }
 
     override fun onStop() {
