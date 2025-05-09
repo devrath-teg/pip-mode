@@ -10,14 +10,12 @@ class PiPActionReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
             VideoPlayerFullScreenActivity.ACTION_PLAY -> {
-                // Trigger play logic (you may delegate to a ViewModel or service)
-                Toast.makeText(context, "Play clicked", Toast.LENGTH_SHORT).show()
+                VideoPlayerFullScreenActivity.pipActionHandler?.onPlay()
             }
-
             VideoPlayerFullScreenActivity.ACTION_PAUSE -> {
-                // Trigger pause logic
-                Toast.makeText(context, "Pause clicked", Toast.LENGTH_SHORT).show()
+                VideoPlayerFullScreenActivity.pipActionHandler?.onPause()
             }
         }
     }
 }
+

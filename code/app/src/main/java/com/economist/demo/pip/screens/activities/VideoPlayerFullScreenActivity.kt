@@ -15,6 +15,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.util.Rational
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -38,7 +39,7 @@ class VideoPlayerFullScreenActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setOrientation()
 
-        setContentView(R.layout.activity_main) // Make sure activity_main has `fragment_container`
+        setContentView(R.layout.activity_main) // Ensure it has `fragment_container`
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
@@ -49,10 +50,22 @@ class VideoPlayerFullScreenActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+
+        pipActionHandler = object : PiPActionHandler {
+            override fun onPlay() {
+                actionPlay()
+            }
+
+            override fun onPause() {
+                actionPause()
+            }
+        }
+
         val filter = IntentFilter().apply {
             addAction(ACTION_PLAY)
             addAction(ACTION_PAUSE)
         }
+
         ContextCompat.registerReceiver(
             this,
             pipReceiver,
@@ -63,6 +76,7 @@ class VideoPlayerFullScreenActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+        pipActionHandler = null
         unregisterReceiver(pipReceiver)
     }
 
@@ -119,10 +133,27 @@ class VideoPlayerFullScreenActivity : AppCompatActivity() {
         }
     }
 
+    fun actionPlay() {
+        Toast.makeText(this, "Play clicked", Toast.LENGTH_SHORT).show()
+        // ViewModel or playback logic goes here
+    }
+
+    fun actionPause() {
+        Toast.makeText(this, "Pause clicked", Toast.LENGTH_SHORT).show()
+        // ViewModel or playback logic goes here
+    }
+
     companion object {
         const val ACTION_PLAY = "com.yourapp.ACTION_PLAY"
         const val ACTION_PAUSE = "com.yourapp.ACTION_PAUSE"
+
+        var pipActionHandler: PiPActionHandler? = null
     }
+}
+
+interface PiPActionHandler {
+    fun onPlay()
+    fun onPause()
 }
 
 
