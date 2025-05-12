@@ -41,6 +41,9 @@ class VideoPlayerPipViewModel : ViewModel() {
     private val _isBuffering = MutableStateFlow(true)
     val isBuffering: StateFlow<Boolean> = _isBuffering
 
+    private val _showControls = MutableStateFlow(true)
+    val showControls: StateFlow<Boolean> = _showControls
+
     private var progressJob: Job? = null
     private var isInitializedInternal = false
     val isInitialized: Boolean
@@ -121,6 +124,14 @@ class VideoPlayerPipViewModel : ViewModel() {
         _player.value?.seekTo(0)
         _player.value?.playWhenReady = true
         _isPlaying.value = true
+    }
+
+    fun hideControls() {
+        _showControls.value = false
+    }
+
+    fun showControls() {
+        _showControls.value = true
     }
 
     fun release() {

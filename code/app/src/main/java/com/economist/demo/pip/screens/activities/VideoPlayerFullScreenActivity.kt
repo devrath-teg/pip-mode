@@ -33,6 +33,7 @@ import com.economist.demo.pip.screens.fragments.VideoPlayerFragment
 class VideoPlayerFullScreenActivity : AppCompatActivity() {
 
     private val pipReceiver = PiPActionReceiver()
+    private val viewModel: VideoPlayerPipViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -141,6 +142,20 @@ class VideoPlayerFullScreenActivity : AppCompatActivity() {
     fun actionPause() {
         Toast.makeText(this, "Pause clicked", Toast.LENGTH_SHORT).show()
         // ViewModel or playback logic goes here
+        viewModel.togglePlayPause()
+    }
+
+    override fun onPictureInPictureModeChanged(
+        isInPictureInPictureMode: Boolean,
+        newConfig: Configuration
+    ) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+
+        if (isInPictureInPictureMode) {
+            viewModel.hideControls()
+        } else {
+            viewModel.showControls()
+        }
     }
 
     companion object {
@@ -148,6 +163,20 @@ class VideoPlayerFullScreenActivity : AppCompatActivity() {
         const val ACTION_PAUSE = "com.yourapp.ACTION_PAUSE"
 
         var pipActionHandler: PiPActionHandler? = null
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (isInPictureInPictureMode) {
+            viewModel.hideControls()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!isInPictureInPictureMode) {
+            viewModel.showControls()
+        }
     }
 }
 

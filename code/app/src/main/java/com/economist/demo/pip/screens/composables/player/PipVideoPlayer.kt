@@ -34,7 +34,8 @@ import com.economist.demo.pip.VideoPlayerPipViewModel
 fun PipVideoPlayer(
     videoUri: Uri,
     viewModel: VideoPlayerPipViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showControls: Boolean
 ) {
     val context = LocalContext.current
     val player by viewModel.player.collectAsState()
@@ -87,45 +88,47 @@ fun PipVideoPlayer(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        text = "${formatDuration(currentPosition)} / ${formatDuration(duration)}",
-                        color = Color.White,
-                        fontSize = 12.sp
-                    )
+                    if(showControls){
+                        Text(
+                            text = "${formatDuration(currentPosition)} / ${formatDuration(duration)}",
+                            color = Color.White,
+                            fontSize = 12.sp
+                        )
 
-                    Row {
-                        IconButton(onClick = { viewModel.toggleMute() }) {
-                            Icon(
-                                painter = painterResource(
-                                    id = if (isMuted)
-                                        R.drawable.ic_volume_off
-                                    else
-                                        R.drawable.ic_volume_on
-                                ),
-                                contentDescription = "Toggle Mute",
-                                tint = Color.White
-                            )
-                        }
+                        Row {
+                            IconButton(onClick = { viewModel.toggleMute() }) {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (isMuted)
+                                            R.drawable.ic_volume_off
+                                        else
+                                            R.drawable.ic_volume_on
+                                    ),
+                                    contentDescription = "Toggle Mute",
+                                    tint = Color.White
+                                )
+                            }
 
-                        IconButton(onClick = { viewModel.togglePlayPause() }) {
-                            Icon(
-                                painter = painterResource(
-                                    id = if (isPlaying)
-                                        R.drawable.ic_pause_circle
-                                    else
-                                        R.drawable.ic_play_circle
-                                ),
-                                contentDescription = "Toggle Play",
-                                tint = Color.White
-                            )
-                        }
+                            IconButton(onClick = { viewModel.togglePlayPause() }) {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (isPlaying)
+                                            R.drawable.ic_pause_circle
+                                        else
+                                            R.drawable.ic_play_circle
+                                    ),
+                                    contentDescription = "Toggle Play",
+                                    tint = Color.White
+                                )
+                            }
 
-                        IconButton(onClick = { viewModel.restartVideo() }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_restart),
-                                contentDescription = "Restart Video",
-                                tint = Color.White
-                            )
+                            IconButton(onClick = { viewModel.restartVideo() }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_restart),
+                                    contentDescription = "Restart Video",
+                                    tint = Color.White
+                                )
+                            }
                         }
                     }
                 }

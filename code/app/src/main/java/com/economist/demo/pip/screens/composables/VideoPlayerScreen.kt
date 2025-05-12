@@ -60,6 +60,7 @@ fun VideoPlayerScreen(
     val activity = context as ComponentActivity
     val viewModel: VideoPlayerPipViewModel = viewModel(activity)
     val videoUrl by viewModel.videoUrl.collectAsState()
+    val showControls by viewModel.showControls.collectAsState()
     val uri = remember(videoUrl) { videoUrl.toUri() }
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val screenHeight = configuration.screenHeightDp.dp
@@ -103,7 +104,8 @@ fun VideoPlayerScreen(
             PipVideoPlayer(
                 videoUri = uri,
                 viewModel = viewModel,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                showControls = showControls
             )
 
             Box(
@@ -114,7 +116,8 @@ fun VideoPlayerScreen(
                 PipVideoPlayer(
                     videoUri = uri,
                     viewModel = viewModel,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    showControls = showControls,
                 )
 
                 IconButton(
@@ -146,7 +149,8 @@ fun VideoPlayerScreen(
                     .fillMaxWidth()
                     .height(screenHeight / 3)
             ) {
-                PipVideoPlayer(videoUri = uri, viewModel = viewModel, modifier = Modifier.matchParentSize())
+                PipVideoPlayer(videoUri = uri, viewModel = viewModel, modifier = Modifier.matchParentSize(),
+                    showControls = showControls )
 
                 Row(
                     modifier = Modifier
@@ -157,7 +161,10 @@ fun VideoPlayerScreen(
                         )
                 ) {
                     IconButton(
-                        onClick = { onEnterPip.invoke()  },
+                        onClick = {
+                            onEnterPip.invoke()
+                            viewModel.hideControls()
+                                  },
                     ) {
                         androidx.compose.material.Icon(
                             painter = painterResource(id = R.drawable.ic_picture_in_picture),
